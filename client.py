@@ -19,6 +19,11 @@ class GoSlice(T.Structure):
     _fields_ = [('data', T.POINTER(T.c_void_p)),
                 ('len', T.c_longlong), ('cap', T.c_longlong)]
 
+    def __init__(self, values):
+        es = tuple(values)
+        siz = len(es)
+        super().__init__((T.c_void_p * siz)(*es), siz, siz)
+
     @property
     def values(self):
         return (self.data[i] for i in range(0, self.len))
@@ -26,16 +31,23 @@ class GoSlice(T.Structure):
     def __str__(self):
         return ', '.join(str(v) for v in self.values)
 
-nums = GoSlice((T.c_void_p * 5)(74, 4, 122, 9, 12), 5, 5)
+
+nums = GoSlice([74, 4, 122, 9, 12])
 lib.Sort.argtypes = [GoSlice]
 lib.Sort.restype = None
 print('nums = {}'.format(strWithType(nums)))
 lib.Sort(nums)
 print('awesome.Sort(nums) = {}'.format(strWithType(nums)))
 
+
 class GoString(T.Structure):
     _fields_ = [('p', T.c_char_p), ('n', T.c_longlong)]
 
+    def __init__(self, s):
+        bs = s.encode('utf-8')
+        super().__init__(bs, len(bs))
+
+
 lib.Log.argtypes = [GoString]
-msg = GoString(b'Hello Python!', 13)
+msg = GoString('Hello Python!')
 lib.Log(msg)

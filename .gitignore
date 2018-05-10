@@ -1,0 +1,4 @@
+*.so
+awesome.h
+__pycache__
+*~
