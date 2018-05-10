@@ -10,4 +10,5 @@ run: build
 	python3 -m client
 
 clean:
-	rm awesome.so awesome.h
+	rm -f awesome.so awesome.h > /dev/null 2>&1
+	rm -rf __pycache__ > /dev/null 2>&1
