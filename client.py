@@ -47,7 +47,24 @@ class GoString(T.Structure):
         bs = s.encode('utf-8')
         super().__init__(bs, len(bs))
 
+    def __str__(self):
+        return self.p.decode('utf-8')
+
 
 lib.Log.argtypes = [GoString]
 msg = GoString('Hello Python!')
 lib.Log(msg)
+
+lib.Log2.argtypes = [T.c_char_p]
+msg = 'Hello Python?'.encode('utf-8')
+lib.Log2(msg)
+
+lib.GetGreeting.argtypes = [GoString]
+lib.GetGreeting.restype = GoString
+v = lib.GetGreeting(GoString('Bar'))
+print(str(v))
+
+lib.GetGreeting2.argtypes = [T.c_char_p]
+lib.GetGreeting2.restype = GoString
+v = lib.GetGreeting2('Baz'.encode('utf-8'))
+print(str(v))
